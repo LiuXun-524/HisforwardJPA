@@ -13,4 +13,6 @@ public interface IRuleSer {
 
 	public RespMsg<?> save(List<Rule> rules);
 
+	public List<Map<String,Object>> findRule(int deptID);
+
 }

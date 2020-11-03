@@ -28,7 +28,9 @@ public interface RuleRepository extends JpaRepository<Rule, String> {
 			"where a.deptID=?1 "+
 			"AND a.registLeID=?2",nativeQuery=true)
 	List<Map<String, Object>> findUser(int deptID, int registLeID);
+	@Query(value="select a.*,b.realName from t_rule a,t_user b where a.userID=b.id and a.deptID=?1",nativeQuery=true)
+	List<Map<String, Object>> findByDeptID(int deptID);
 
-	void multiSave();
+	
 
 }

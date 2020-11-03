@@ -24,10 +24,16 @@ public class RuleController {
 		return list;
 		
 	}
+	@RequestMapping("/findRule")
+	public List<Map<String,Object>> findRule(int deptID){
+		List<Map<String,Object>> list = ser.findRule(deptID);
+		return list;
+		
+	}
 	@RequestMapping("/save")
-	public RespMsg<?> save(@RequestBody RuleVo entity){
-		List<Rule> rules = entity.getRules();
-		RespMsg<?> rm = ser.save(rules);
+	public RespMsg<?> save(@RequestBody RuleVo rules){
+		List<Rule> rs = rules.getRules();
+		RespMsg<?> rm = ser.save(rs);
 		return rm;
 		
 	}
