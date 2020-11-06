@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,8 @@ import com.example.demojpa.domain.entity.RespMsg;
 import com.example.demojpa.domain.entity.Scheduling;
 import com.example.demojpa.service.ISchedulingSer;
 
-@Service
+@Service("SchedulingSerImpl")
+@Transactional(rollbackOn={RuntimeException.class,Exception.class})
 public class SchedulingSerImpl implements ISchedulingSer{
 	@Autowired
 	SchedulingDao dao;
@@ -28,7 +31,6 @@ public class SchedulingSerImpl implements ISchedulingSer{
 			try {
 				saveScheduling(scheduling);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -47,7 +49,7 @@ public class SchedulingSerImpl implements ISchedulingSer{
         saveCurdate(scheduling.getStartDate(),scheduling);
         // startDate算完后，计算开始结束时间相差的天数，每次加一天，加n次，入库即可
         // 计算相差的天数
-        long between = betweenDays(scheduling.getEndDate(), scheduling.getStartDate());
+        long between = betweenDays(scheduling.getStartDate(), scheduling.getEndDate());
         System.out.println("日期相差的天数：" + between);
         if (between > 0) {
             for (int i = 0; i < between; i++) {
@@ -66,7 +68,7 @@ public class SchedulingSerImpl implements ISchedulingSer{
 	    calendar.setTime(date1);
 	    Date date2 = sdf.parse(endDate);
 	    calendar.setTime(date2);
-	    long betweenDays = (date1.getTime() - date2.getTime()) / (60 * 60 * 24 * 1000);
+	    long betweenDays = (date2.getTime() - date1.getTime()) / (60 * 60 * 24 * 1000);
 	    // 打印控制台相差的天数
 	    // System.out.println(betweenDays);
 	    return betweenDays;
@@ -75,7 +77,7 @@ public class SchedulingSerImpl implements ISchedulingSer{
 	     //1、根据日期计算星期
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	    Date curdate_date=sdf.parse(curdate);
-	    // 把开始结束时间转换成字符串
+	    
 	    Calendar c = Calendar.getInstance();
 	    c.setTime(curdate_date);
 	    // 原始返回值：星期1-2 星期2-3 星期3-4 星期5-6 星期6-7 星期7-1
@@ -85,31 +87,31 @@ public class SchedulingSerImpl implements ISchedulingSer{
 	        week = 7;
 	    }
 	    System.out.println("星期：" + week);
-//	    String weekStr = "10101101101011";
 	    String weekStr = schedu.getWeek();
-	    // 10101101101011
-	    // 上午截取i*2-2，下午截取i*2-1
-	    char noon1 = weekStr.charAt(week * 2 - 2);
-	    
-	    Scheduling db_sch=new Scheduling();
-	    db_sch.setDeptID(schedu.getDeptID());
-	    db_sch.setRuleID(schedu.getRuleID());
-	    db_sch.setUserID(schedu.getUserID());
-	    db_sch.setSchedDate(curdate);
-	    
-	    if (noon1 == '1') {
-	        
-	        db_sch.setNoon("上午");
-	        System.out.println(curdate + "上午有班");
-	        // SAVE
-	        dao.save(db_sch);
-	    }
-	    char noon2 = weekStr.charAt(week * 2 - 1);
-	    if (noon2 == '1') {
-	        schedu.setNoon("下午");
-	        System.out.println(curdate + "下午有班");
-	        // SAVE
-	        dao.save(schedu);
-	    }
+	    	char noon1 = weekStr.charAt(week * 2 - 2);
+	    	Scheduling db_sch=new Scheduling();
+	    	db_sch.setDeptID(schedu.getDeptID());
+	    	db_sch.setRuleID(schedu.getRuleID());
+	    	db_sch.setUserID(schedu.getUserID());
+	    	db_sch.setSchedDate(curdate);
+	    	if (noon1 == '1') {
+	    		db_sch.setNoon("上午");
+	    		System.out.println(curdate + "上午有班");
+	    		// SAVE
+	    		dao.save(db_sch);
+	    	}
+	    	char noon2 = weekStr.charAt(week * 2 - 1);
+	    	if (noon2 == '1') {
+	    		Scheduling db_sch2=new Scheduling();
+		    	db_sch2.setDeptID(schedu.getDeptID());
+		    	db_sch2.setRuleID(schedu.getRuleID());
+		    	db_sch2.setUserID(schedu.getUserID());
+		    	db_sch2.setSchedDate(curdate);
+		    	db_sch2.setNoon("下午");
+	    		
+	    		System.out.println(curdate + "下午有班");
+	    		// SAVE
+	    		dao.save(db_sch2);
+	    	}
 	}
 }
