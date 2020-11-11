@@ -20,6 +20,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+	       <groupId>org.projectlombok</groupId>
+	       <artifactId>lombok</artifactId>
+	       <version>0.10.2</version>
+	   	</dependency>
 	<!-- 热部署模块 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
