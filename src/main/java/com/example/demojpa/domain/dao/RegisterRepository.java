@@ -1,5 +1,7 @@
 package com.example.demojpa.domain.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,5 +13,8 @@ public interface RegisterRepository extends JpaRepository<Register, String> {
 	int findUsedQuota(String userID, String visitDate);
 	@Query(value="select max(caseNumber) from t_register",nativeQuery=true)
 	int findCaseNumber();
+	
+	@Query(value="select * from t_register where userID=?1 AND visitState=?2",nativeQuery=true)
+	List<Register> findPatientsByUserID(int userID,int visitState);
 
 }

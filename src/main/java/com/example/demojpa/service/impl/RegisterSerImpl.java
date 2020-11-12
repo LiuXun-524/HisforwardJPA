@@ -2,6 +2,7 @@ package com.example.demojpa.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -84,6 +85,11 @@ public class RegisterSerImpl implements IRegisterSer {
 			throw new Exception();
 		}
 		return register;
+	}
+	@Override
+	public List<Register> findPatientsByUserID(int userID,int visitState) {
+		
+		return dao.findPatientsByUserID(userID,visitState);
 	}
 
 }
